@@ -27,14 +27,9 @@ object CDCSupport extends Cdc  {
 
     val otherOps =  insertedandupd(newSnapshot, previousSnapshot)
     //val op = otherOps.operation //add to select only active from previous
-    val prev = previousSnapshot.select(col("id"),col("payroleid"),col("name"),col("ts"))
+    val prev = previousSnapshot.select(col("id"),col("payroleid"),col("name"),col("surname"),col("company"),col("dept"),col("ts"))
     val df = otherOps.unionAll(prev)
- /* val col1 :Column = col("I")
 
-    val operfunc = (id :Integer ) => "I"
-    val concatfnc = udf(operfunc)
-    val test = df.withColumn("Flag" , concatfnc(col("id")) ) */
-    //otherOps union deletedRecords
     val test = scd(df)
     test
   }

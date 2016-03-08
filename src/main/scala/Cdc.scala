@@ -7,28 +7,29 @@ trait Cdc {
 
   def insertedandupd (inp: DataFrame, snp:DataFrame): DataFrame =
 
-  {  inp.show()
+  {
     val insert_recds = inp.join(
       snp,
       inp("id") <=> snp("id") ,
       "left"
     ).select(inp("id").alias("id"),inp("payroleid").alias("payroleid"),inp("name").alias("name"),inp("surname").alias("surname"),
         inp("age").alias("age"),inp("company").alias("company"),inp("dept").alias("dept"),inp("md5col").alias("md5col"),
-        inp("ts").alias("ts"),snp("id").alias("id1"))
-    .where(col("id1") isNull ).select(col("id"),col("payroleid"),col("name"),col("ts"))
+        inp("ts").alias("ts"),inp("MD5").alias("MD5"),snp("id").alias("id1"))
+    .filter(col("id1") isNull).select(col("id"),col("payroleid"),col("name"),col("surname"),col("company"),col("dept"),col("ts"),col("MD5"))
 
-    insert_recds.show();
     val upd_recds = inp.join(
       snp,
       inp("id") <=> snp("id") ,
       "left"
     ).select(inp("id").alias("id"),inp("payroleid").alias("payroleid"),inp("name").alias("name"),inp("surname").alias("surname"),
-        inp("age").alias("age"),inp("company").alias("company"),inp("dept").alias("dept"),inp("md5col").alias("md5col"),snp("id").alias("id1"),
-        snp("md5col").alias("md5col1"), inp("ts").alias("ts"))
-      .where(col("id1") isNotNull ).where(col("md5col") === col("md5col1")).select("id","payroleid","name","ts")
+        inp("age").alias("age"),inp("company").alias("company"),inp("dept").alias("dept"),inp("MD5").alias("md5col"),snp("id").alias("id1"),
+        snp("MD5").alias("md5col1"), inp("ts").alias("ts"))
+      .where(col("id1") isNotNull ).where(col("md5col") !== col("md5col1")).select(col("id"),col("payroleid"),col("name"),col("surname"),col("company"),col("dept"),col("ts"),col("md5col"))
 
     val final_rcds = insert_recds.unionAll(upd_recds)
+    final_rcds.show()
     final_rcds
+
 
   }
   //def deleted(record: DataFrame): Cdc = new CdcImpl(record, "D")
