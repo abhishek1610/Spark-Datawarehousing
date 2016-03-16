@@ -11,4 +11,4 @@ Next we are doing change detection for same records existing in both source and 
 
 Finally we are taking unioin of 2 dtaset and merging with existing data.
 
-
+In the CDCsupport.scd function we are doing a windows function(lead) which will actually put the ts(start date) of current record to endts(end date) of previous record. Note this will only be for cases where we have 2 ids(both previous and new).
